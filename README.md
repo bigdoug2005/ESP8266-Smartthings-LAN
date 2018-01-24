@@ -9,7 +9,7 @@ There are three things needed to get this system working.
 3. A Smart App must also be added to SmartThings and published for your hub. The Smart App handles incoming LAN requests and updates the device based on the data.
 
 # Some Notes:
-The Smart App will automatically create a device based on the MAC address of the ESP8266. Once you have everything working properly, the first time a ESP8266 connectes and sends data a new device will appear in your SmartThings "Things". From then on, the Smart App will update that same device when new data arrives.
+The Smart App will automatically create a device based on the MAC address of the ESP8266. Once you have everything working properly, the first time a ESP8266 connectes and sends data a new device will appear in your SmartThings "Things". From then on, the Smart App will update that same device when new data arrives. If you have multiple devices it will create a new "Thing" for each device since the MAC address will be unique. This means a single smart app will creat and update as many devices as you want. You could even update the Smart App to push data to multiple different device types or combine multiple ESP8266 devices into a single "Thing".
 
 I am using a cheap OLED display based on the ssd1306 driver over SPI. If you do not have a screen connected the micropython main.py script will throw an error. You can comment out all of the display updates to run without a screen
 
@@ -17,10 +17,12 @@ If you leave sleep enabled you must connect the RST pin to D0
 
 You will need to update the SSID and password in main.py to connect to your wifi network
 
-Use esptool (pip install esptool) to erase flash pip install esptool
+Use the Python esptool (pip install esptool) to erase flash pip install esptool
 
 I use https://github.com/nodemcu/nodemcu-flasher to flash firmware
 
 I use ESPlorer to test code on the D1 Mini https://esp8266.ru/esplorer/
 
-I use WebREPL to load the main.py onto the D1 mini "import webrepl_setup" 
+I use WebREPL to load the main.py onto the D1 mini "import webrepl_setup" in the REPL
+
+Right now there is no way for the SmartHub to talk to the ESP8266. This project would be a good reference for adding that capability https://github.com/hobbzey/Simplest-SmartThings-ESP8266-Blinds note that it uses the Arduino IDE for the ESP8266 instead of Micropython but the concept is similar.
