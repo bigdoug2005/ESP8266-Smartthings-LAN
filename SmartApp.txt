@@ -1,0 +1,105 @@
+/**
+ *  Soil_Moisture
+ *
+ *  Copyright 2018 BigDoug2005
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at:
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+ *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+ *  for the specific language governing permissions and limitations under the License.
+ *
+ */
+import groovy.json.JsonSlurper
+
+definition(
+    name: "Soil_Moisture",
+    namespace: "bigdoug2005",
+    author: "BigDoug2005",
+    description: "ESP8266 Soil Moisture Sensor",
+    category: "Convenience",
+    iconUrl: "http://img4.imagetitan.com/img4/small/17/17_moisture1.png",
+    iconX2Url: "http://img4.imagetitan.com/img4/small/17/17_moisture2.png",
+    iconX3Url: "http://img4.imagetitan.com/img4/small/17/17_moisture2.png")
+
+
+preferences {
+//	section("Create Moisture Sensor") {
+//		input "sensorLabel", "text", title: "Device Name", required: true
+//	}
+    section("On this hub") {
+        input "theHub", "hub", multiple: false, required: true
+    }
+}
+
+def installed() {
+	log.debug "Installed with settings: ${settings}"
+	state.devNum = 1
+	initialize()
+}
+
+def updated() {
+	log.debug "Updated with settings: ${settings}"
+
+	unsubscribe()
+	initialize()
+}
+
+def initialize() {
+	log.info "Soil Moisture Initialized"
+	subscribe(location, null, processLANEvent, [filterEvents:false]) //Subscribe to all events. This will see LAN events.
+    def childName = app.id
+    
+}
+
+
+
+def processLANEvent(evt)
+{
+	//def childrenList = getChildDevices()
+    //def childrenListID= childrenList.deviceNetworkId
+    //log.debug "Children: ${childrenList}"
+    //log.debug "Children network id: ${childrenListID}"
+    //log.debug "LAN Message Received"
+	def msg = parseLanMessage(evt.value)
+	def body = msg.body
+  	log.debug "Lan Message: ${msg}" 
+    log.debug "Body Data: ${body}"
+	if (body)
+    {
+    	//log.debug "Slupring"
+		def sluper = new JsonSlurper();
+		def json = sluper.parseText(body)
+        //log.debug "Json Data: ${json}"
+		def state_data = json.state
+        def name_data = json.name
+		//log.debug "Slurped State: ${state_data}"
+  		def existing = getChildDevice(name_data)
+ 			if (!existing) {
+    		def childDevice = addChildDevice("bigdoug_soil_moisture", "Soil_Moisture_Sensor", name_data, theHub.id, [label: "Soil Sensor ${state.devNum}"])
+   			log.debug "Child Device Created: ${childDevice}"
+            state.devNum = state.devNum + 1
+      		}
+		def myChild = getChildDevice(name_data)
+        myChild.sendEvent(name:"humidity", value:state_data)
+
+        //log.debug "Sent data to child"
+	}
+}
+
+def uninstalled() {
+    removeChildDevices(getChildDevices())
+}
+
+private removeChildDevices(delete) {
+    delete.each {
+        deleteChildDevice(it.deviceNetworkId)
+    }
+}
+
+
+
+
