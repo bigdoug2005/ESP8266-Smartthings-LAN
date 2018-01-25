@@ -11,7 +11,7 @@ There are three things needed to get this system working.
 # Some Notes:
 The Smart App will automatically create a device based on the MAC address of the ESP8266. Once you have everything working properly, the first time a ESP8266 connectes and sends data a new device will appear in your SmartThings "Things". From then on, the Smart App will update that same device when new data arrives. If you have multiple devices it will create a new "Thing" for each device since the MAC address will be unique. This means a single smart app will creat and update as many devices as you want. You could even update the Smart App to push data to multiple different device types or combine multiple ESP8266 devices into a single "Thing".
 
-I am using a cheap OLED display based on the ssd1306 driver over SPI. If you do not have a screen connected the micropython main.py script will throw an error. You can comment out all of the display updates to run without a screen
+I am using a cheap OLED display based on the ssd1306 driver over I2C. If you do not have a screen connected the micropython main.py script will throw an error. You can comment out all of the display updates to run without a screen
 
 If you leave sleep enabled you must connect the RST pin to D0
 
