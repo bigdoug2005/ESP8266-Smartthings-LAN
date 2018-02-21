@@ -7,6 +7,7 @@ There are three things needed to get this system working.
 1. ESP8266 running Micropython. I am using a Wemos D1 mini V2 easily found on ebay. There are multiple guides online that explain how to install micropython on the device. Make sure to clear the flash first.
 2. The Device Handler must be added to SmartThings via the SmartThings IDE and published for your hub. This will be the dashboard for the device created.
 3. A Smart App must also be added to SmartThings and published for your hub. The Smart App handles incoming LAN requests and updates the device based on the data.
+4. A soil moisture sensor. The cheap resistive ones corrode. I use these slightly more expensive capacitive sensors: https://www.digikey.com/products/en?mpart=SEN0193&v=1738
 
 # Some Notes:
 The Smart App will automatically create a device based on the MAC address of the ESP8266. Once you have everything working properly, the first time a ESP8266 connectes and sends data a new device will appear in your SmartThings "Things". From then on, the Smart App will update that same device when new data arrives. If you have multiple devices it will create a new "Thing" for each device since the MAC address will be unique. This means a single smart app will creat and update as many devices as you want. You could even update the Smart App to push data to multiple different device types or combine multiple ESP8266 devices into a single "Thing".
